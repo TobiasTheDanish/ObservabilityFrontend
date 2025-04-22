@@ -1,6 +1,9 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import { sessionStore } from '$lib/store';
+	import TeamSelect from './TeamSelect.svelte';
+
+	const { teams } = $props();
 
 	function signOut() {
 		sessionStore.set('');
@@ -9,7 +12,9 @@
 </script>
 
 <div class="flex justify-between p-4">
-	<div></div>
+	<div>
+		<TeamSelect {teams} />
+	</div>
 	<div>
 		<button class="w-fit cursor-pointer rounded-sm border px-4 py-2" onclick={signOut}>
 			Sign out

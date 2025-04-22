@@ -4,12 +4,15 @@
 	import type { LayoutProps } from '../$types';
 
 	const { data, children }: LayoutProps = $props();
+
 	//@ts-ignore
-	if (!data.authenticated) {
+	const { authenticated, teams } = data;
+
+	if (!authenticated) {
 		goto('sign-in');
 	}
 </script>
 
-<Navbar />
+<Navbar {teams} />
 
 {@render children()}
