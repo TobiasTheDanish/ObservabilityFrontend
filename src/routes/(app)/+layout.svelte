@@ -9,7 +9,7 @@
 	const { authenticated, teams } = data;
 
 	if (!authenticated) {
-		goto('sign-in');
+		goto('/sign-in');
 	}
 </script>
 

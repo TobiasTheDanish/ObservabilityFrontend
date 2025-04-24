@@ -1,7 +1,7 @@
 import type { ServiceResponse } from './authService';
 
-const baseUrl = 'http://jsoc4ws48so0g48gko0s8ocg.78.46.170.16.sslip.io';
-//const baseUrl = 'http://localhost:8080';
+// export const baseUrl = 'http://jsoc4ws48so0g48gko0s8ocg.78.46.170.16.sslip.io';
+export const baseUrl = 'http://localhost:8080';
 
 export type Team = {
 	id: number;

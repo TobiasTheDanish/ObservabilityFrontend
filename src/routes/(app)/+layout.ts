@@ -12,10 +12,15 @@ export const load: LayoutData = async ({ fetch }: LoadEvent) => {
 	const teams = teamRes.success ? teamRes.data : [];
 
 	console.log({ sessionId, authenticated });
+	if (authenticated.success) {
+		sessionStore.set(authenticated.data);
+	} else {
+		sessionStore.set('');
+	}
 
 	return {
-		sessionId,
-		authenticated: authenticated.success && authenticated.data,
+		sessionId: authenticated.success ? authenticated.data : '',
+		authenticated: authenticated.success,
 		teams
 	};
 };

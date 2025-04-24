@@ -1,5 +1,5 @@
-const baseUrl = 'http://jsoc4ws48so0g48gko0s8ocg.78.46.170.16.sslip.io'
-//const baseUrl = 'http://localhost:8080';
+//const baseUrl = 'http://jsoc4ws48so0g48gko0s8ocg.78.46.170.16.sslip.io';
+const baseUrl = 'http://localhost:8080';
 
 export type ServiceErrorResponse<E extends Error> = {
 	success: false;
@@ -76,10 +76,47 @@ export const authService = {
 	},
 	validateSession: async function(
 		sessionId: string | undefined
-	): Promise<ServiceResponse<boolean>> {
+	): Promise<ServiceResponse<string>> {
+		const res = await fetch(`${baseUrl}/auth/validate`, {
+			method: 'POST',
+			headers: {
+				Authorization: `Bearer ${sessionId}`,
+				'Content-Type': 'application/json'
+			}
+		});
+
+		if (!res.ok) {
+			let body: string | any;
+			if (res.headers.get('Content-type')?.includes('application/json')) {
+				body = await res.json();
+			} else {
+				body = await res.text();
+			}
+
+			let errorMessage: string;
+			if (typeof body == 'string') {
+				errorMessage = body;
+			} else {
+				errorMessage = body.message ?? 'Unknown error';
+			}
+
+			return {
+				success: false,
+				errorMessage
+			};
+		}
+
+		const body = await res.json();
+		if (body.sessionId === undefined) {
+			return {
+				success: false,
+				errorMessage: 'Malformed server response'
+			};
+		}
+
 		return {
 			success: true,
-			data: (sessionId?.trim()?.length ?? 0) > 0
+			data: body.sessionId
 		};
 	}
 };
