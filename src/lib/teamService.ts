@@ -13,6 +13,21 @@ export type Application = {
 	name: string;
 };
 
+export type AppData = {
+	installations: {
+		id: string;
+		sdkVersion: number;
+		model: string;
+		brand: string;
+	}[];
+	sessions: {
+		id: string;
+		installationId: string;
+		createdAt: number;
+		crashed: boolean;
+	}[];
+};
+
 export type FetchFn = (input: RequestInfo | URL, init?: RequestInit) => Promise<Response>;
 
 export const teamService = {
@@ -172,6 +187,60 @@ export const teamService = {
 				data: {
 					id: body.id,
 					name: appName
+				}
+			};
+		} catch (e) {
+			const errorMessage = (e as Error).message ?? 'Unknown error';
+			return {
+				success: false,
+				errorMessage,
+				error: e as Error
+			};
+		}
+	},
+	getAppData: async function(
+		sessionId: string,
+		appId: number,
+		fetchFn: FetchFn = fetch
+	): Promise<ServiceResponse<AppData>> {
+		try {
+			const res = await fetchFn(`${baseUrl}/app/v1/apps/${appId}`, {
+				headers: {
+					Authorization: `Bearer ${sessionId}`
+				}
+			});
+			if (!res.ok) {
+				let body: string | any;
+				if (res.headers.get('Content-type')?.includes('application/json')) {
+					body = await res.json();
+				} else {
+					body = await res.text();
+				}
+
+				let errorMessage: string;
+				if (typeof body == 'string') {
+					errorMessage = body;
+				} else {
+					errorMessage = body.message ?? 'Unknown error';
+				}
+
+				return {
+					success: false,
+					errorMessage
+				};
+			}
+
+			const body = await res.json();
+			if (body.appData === undefined) {
+				return {
+					success: false,
+					errorMessage: 'No app data returned'
+				};
+			}
+			return {
+				success: true,
+				data: {
+					...body.appData
 				}
 			};
 		} catch (e) {
