@@ -1,4 +1,5 @@
-const baseUrl = 'http://localhost:8080';
+const baseUrl = 'http://jsoc4ws48so0g48gko0s8ocg.78.46.170.16.sslip.io'
+//const baseUrl = 'http://localhost:8080';
 
 export type ServiceErrorResponse<E extends Error> = {
 	success: false;
