@@ -1,12 +1,13 @@
 import { error } from '@sveltejs/kit';
 import type { LayoutLoad } from './$types';
-import { teamService } from '$lib/teamService';
+import { baseUrl, type Application, type FetchFn } from '$lib/teamService';
+import type { ServiceResponse } from '$lib/authService';
 
 export const load: LayoutLoad = async ({ params, parent, fetch }) => {
 	try {
 		const teamId = parseInt(params.teamId);
 		const parentData = await parent();
-		const apps = await teamService.getApps(teamId, parentData.sessionId, fetch);
+		const apps = await getApps(teamId, parentData.sessionId, fetch);
 
 		console.log({ teamId, parentData, apps });
 
@@ -22,3 +23,57 @@ export const load: LayoutLoad = async ({ params, parent, fetch }) => {
 		error(404, 'not found');
 	}
 };
+
+async function getApps(
+	teamId: number,
+	sessionId: string,
+	fetchFn: FetchFn = fetch
+): Promise<ServiceResponse<Application[]>> {
+	try {
+		const res = await fetchFn(`${baseUrl}/app/v1/teams/${teamId}/apps`, {
+			headers: {
+				Authorization: `Bearer ${sessionId}`
+			}
+		});
+		if (!res.ok) {
+			let body: string | any;
+			if (res.headers.get('Content-type')?.includes('application/json')) {
+				body = await res.json();
+			} else {
+				body = await res.text();
+			}
+
+			let errorMessage: string;
+			if (typeof body == 'string') {
+				errorMessage = body;
+			} else {
+				errorMessage = body.message ?? 'Unknown error';
+			}
+
+			return {
+				success: false,
+				errorMessage
+			};
+		}
+
+		const body = await res.json();
+		if (body.apps === undefined || !Array.isArray(body.apps)) {
+			return {
+				success: false,
+				errorMessage: 'No or malformed apps returned'
+			};
+		}
+
+		return {
+			success: true,
+			data: body.apps
+		};
+	} catch (e) {
+		const errorMessage = (e as Error).message ?? 'Unknown error';
+		return {
+			success: false,
+			errorMessage,
+			error: e as Error
+		};
+	}
+}

@@ -3,20 +3,15 @@ import type { PageLoad } from './$types';
 import { baseUrl, type FetchFn } from '$lib/teamService';
 
 export const load: PageLoad = async ({ params, parent, fetch }) => {
-	try {
-		const dataSessionId = parseInt(params.id);
-		const { sessionId } = await parent();
+	const dataSessionId = params.id;
+	const { sessionId } = await parent();
 
-		return {
-			sessionData: await fetchSessionData(dataSessionId, sessionId, fetch)
-		};
-	} catch (e) {
-		console.error(e);
-		error(404, 'Invalid id');
-	}
+	return {
+		sessionData: await fetchSessionData(dataSessionId, sessionId, fetch)
+	};
 };
 
-async function fetchSessionData(dataSessionId: number, sessionId: string, fetchFn: FetchFn) {
+async function fetchSessionData(dataSessionId: string, sessionId: string, fetchFn: FetchFn) {
 	try {
 		const res = await fetchFn(`${baseUrl}/app/v1/sessions/${dataSessionId}`, {
 			headers: {
