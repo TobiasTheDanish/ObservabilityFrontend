@@ -1,34 +1,5 @@
-import type { ServiceResponse } from './authService';
-
-export const baseUrl = 'http://jsoc4ws48so0g48gko0s8ocg.78.46.170.16.sslip.io';
-// export const baseUrl = 'http://localhost:8080';
-
-export type Team = {
-	id: number;
-	name: string;
-};
-
-export type Application = {
-	id: number;
-	name: string;
-};
-
-export type AppData = {
-	installations: {
-		id: string;
-		sdkVersion: number;
-		model: string;
-		brand: string;
-	}[];
-	sessions: {
-		id: string;
-		installationId: string;
-		createdAt: number;
-		crashed: boolean;
-	}[];
-};
-
-export type FetchFn = (input: RequestInfo | URL, init?: RequestInit) => Promise<Response>;
+// export const baseUrl = 'http://jsoc4ws48so0g48gko0s8ocg.78.46.170.16.sslip.io';
+export const baseUrl = 'http://localhost:8080';
 
 export const teamService = {
 	createApp: async function(

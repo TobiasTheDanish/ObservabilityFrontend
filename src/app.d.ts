@@ -7,7 +7,8 @@ declare global {
 		// interface PageData {}
 		// interface PageState {}
 		// interface Platform {}
+		import './ambient';
 	}
 }
 
-export {};
+export { };

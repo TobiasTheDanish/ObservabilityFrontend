@@ -1,20 +1,5 @@
-const baseUrl = 'http://jsoc4ws48so0g48gko0s8ocg.78.46.170.16.sslip.io';
-// const baseUrl = 'http://localhost:8080';
-
-export type ServiceErrorResponse<E extends Error> = {
-	success: false;
-	errorMessage: string;
-	error?: E;
-};
-
-export type ServiceSuccessResponse<T> = {
-	success: true;
-	data: T;
-};
-
-export type ServiceResponse<T = unknown, E extends Error = Error> =
-	| ServiceSuccessResponse<T>
-	| ServiceErrorResponse<E>;
+// const baseUrl = 'http://jsoc4ws48so0g48gko0s8ocg.78.46.170.16.sslip.io';
+const baseUrl = 'http://localhost:8080';
 
 export const authService = {
 	signIn: async function(

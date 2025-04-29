@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
-	import { teamService, type Application, type Team } from '$lib/teamService';
+	import { teamService } from '$lib/teamService';
 
 	const {
 		selected,
