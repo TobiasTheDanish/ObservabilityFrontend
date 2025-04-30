@@ -13,17 +13,17 @@ export type ResourceUsage = {
 	}[];
 };
 
-type Team = {
+export type Team = {
 	id: number;
 	name: string;
 };
 
-type Application = {
+export type Application = {
 	id: number;
 	name: string;
 };
 
-type AppData = {
+export type AppData = {
 	installations: {
 		id: string;
 		sdkVersion: number;
@@ -38,18 +38,18 @@ type AppData = {
 	}[];
 };
 
-type ServiceErrorResponse<E extends Error> = {
+export type ServiceErrorResponse<E extends Error> = {
 	success: false;
 	errorMessage: string;
 	error?: E;
 };
 
-type ServiceSuccessResponse<T> = {
+export type ServiceSuccessResponse<T> = {
 	success: true;
 	data: T;
 };
 
-type ServiceResponse<T = unknown, E extends Error = Error> =
+export type ServiceResponse<T = unknown, E extends Error = Error> =
 	| ServiceSuccessResponse<T>
 	| ServiceErrorResponse<E>;
 
@@ -70,7 +70,7 @@ import type {
 import type { ComposeOption } from 'echarts/core';
 
 // Create an Option type with only the required components and charts via ComposeOption
-type ECOption = ComposeOption<
+export type ECOption = ComposeOption<
 	| BarSeriesOption
 	| LineSeriesOption
 	| TitleComponentOption
