@@ -7,5 +7,6 @@
 </script>
 
 <p>Hello installation</p>
+<pre>{JSON.stringify(data.installationInfo, null, 4)}</pre>
 
 <ResourceUsage resourceUsage={data.resourceUsage} />
