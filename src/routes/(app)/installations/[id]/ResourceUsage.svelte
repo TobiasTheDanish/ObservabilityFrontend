@@ -1,11 +1,7 @@
 <script lang="ts">
-	import type { Action } from 'svelte/action';
-	import * as echarts from 'echarts/core';
-	import { GridComponent, LegendComponent, TooltipComponent } from 'echarts/components';
-	import { LineChart } from 'echarts/charts';
-	import { CanvasRenderer } from 'echarts/renderers';
+	import type { ResourceUsage } from '$lib/types';
 	import { format } from 'date-fns';
-	echarts.use([GridComponent, LineChart, CanvasRenderer, LegendComponent, TooltipComponent]);
+	import Chart from '$lib/components/Chart.svelte';
 
 	const {
 		resourceUsage
@@ -15,20 +11,20 @@
 
 	const xAxis =
 		resourceUsage.memoryUsage?.map((m) => format(new Date(m.createdAt * 1000), 'HH:mm:ss')) ?? [];
-	const memoryChartAction: Action<HTMLDivElement, ECOption> = (node, option) => {
-		const freeMemoryChart = echarts.init(node, null, {
-			width: node.clientWidth,
-			height: node.clientHeight
-		});
 
-		freeMemoryChart.setOption(option);
-	};
+	const largestMax =
+		resourceUsage.memoryUsage?.reduce(
+			(acc, cur) => (acc < cur.maxMemory ? cur.maxMemory : acc),
+			0
+		) ?? 0;
+	const maxY = largestMax + (10 - (largestMax % 10));
 </script>
 
-<div class="grid min-h-[350px] w-full grid-cols-3 gap-2">
-	<div
+<div class="grid w-full grid-cols-3 gap-2">
+	<Chart
+		class="h-[250px]"
 		id="free-memory-chart"
-		use:memoryChartAction={{
+		options={{
 			tooltip: {},
 			legend: {},
 			title: {
@@ -40,11 +36,7 @@
 			},
 			yAxis: [
 				{
-					min: 0,
-					max: resourceUsage.memoryUsage?.reduce(
-						(acc, cur) => (acc < cur.maxMemory ? cur.maxMemory : acc),
-						0
-					)
+					max: maxY
 				}
 			],
 			series: [
@@ -55,10 +47,11 @@
 				}
 			]
 		}}
-	></div>
-	<div
+	/>
+	<Chart
+		class="h-[250px]"
 		id="used-memory-chart"
-		use:memoryChartAction={{
+		options={{
 			tooltip: {},
 			legend: {},
 			title: {
@@ -70,11 +63,7 @@
 			},
 			yAxis: [
 				{
-					min: 0,
-					max: resourceUsage.memoryUsage?.reduce(
-						(acc, cur) => (acc < cur.maxMemory ? cur.maxMemory : acc),
-						0
-					)
+					max: maxY
 				}
 			],
 			series: [
@@ -85,10 +74,11 @@
 				}
 			]
 		}}
-	></div>
-	<div
+	/>
+	<Chart
+		class="h-[250px]"
 		id="total-memory-chart"
-		use:memoryChartAction={{
+		options={{
 			tooltip: {},
 			legend: {},
 			title: {
@@ -100,11 +90,7 @@
 			},
 			yAxis: [
 				{
-					min: 0,
-					max: resourceUsage.memoryUsage?.reduce(
-						(acc, cur) => (acc < cur.maxMemory ? cur.maxMemory : acc),
-						0
-					)
+					max: maxY
 				}
 			],
 			series: [
@@ -115,5 +101,51 @@
 				}
 			]
 		}}
-	></div>
+	/>
+	<Chart
+		class="h-[250px]"
+		id="max-memory-chart"
+		options={{
+			tooltip: {},
+			legend: {},
+			xAxis: {
+				type: 'category',
+				data: xAxis
+			},
+			yAxis: {
+				max: maxY
+			},
+			series: [
+				{
+					data: resourceUsage.memoryUsage?.map((m) => m.maxMemory) ?? [],
+					type: 'line',
+					areaStyle: {}
+				}
+			]
+		}}
+	/>
+	<Chart
+		class="h-[250px]"
+		id="available-heap-space-chart"
+		options={{
+			tooltip: {},
+			legend: {},
+			xAxis: {
+				type: 'category',
+				data: xAxis
+			},
+			yAxis: [
+				{
+					max: maxY
+				}
+			],
+			series: [
+				{
+					data: resourceUsage.memoryUsage?.map((m) => m.availableHeapSpace) ?? [],
+					type: 'line',
+					areaStyle: {}
+				}
+			]
+		}}
+	/>
 </div>
