@@ -1,0 +1,9 @@
+services:
+  observe_fe:
+    build: .
+    container_name: observe-fe
+    restart: unless-stopped
+    environment:
+      API_BASE_URL: 'http://localhost:8080'
+    ports:
+      - '3003:3000'
