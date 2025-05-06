@@ -3,11 +3,11 @@
 	import type { PageProps } from './$types';
 
 	const { data }: PageProps = $props();
-	const { sessionId, selectedTeam: selected, apps } = $derived(data);
+	const { selectedTeam: selected, apps } = $derived(data);
 </script>
 
 <h3>{selected?.name ?? 'No team'}</h3>
 
 {#if selected !== undefined}
-	<AppGrid {sessionId} {selected} {apps} />
+	<AppGrid {selected} {apps} />
 {/if}

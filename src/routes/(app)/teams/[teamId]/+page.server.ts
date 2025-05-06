@@ -1,15 +1,18 @@
-// export const baseUrl = 'http://jsoc4ws48so0g48gko0s8ocg.78.46.170.16.sslip.io';
-export const baseUrl = 'http://localhost:8080';
+import { PUBLIC_API_BASE_URL } from '$env/static/public';
+import { redirect, type Actions } from '@sveltejs/kit';
 
-export const teamService = {
-	createApp: async function(
-		sessionId: string,
-		teamId: number,
-		appName: string,
-		fetchFn: FetchFn = fetch
-	): Promise<ServiceResponse<Application>> {
+export const actions = {
+	createApp: async ({ request, fetch, cookies, params }) => {
+		const sessionId = cookies.get('sessionId');
+		console.log(`[createAppAction] sessionId: ${sessionId}`);
+		if (sessionId === undefined) {
+			redirect(303, '/sign-in');
+		}
 		try {
-			const res = await fetchFn(`${baseUrl}/app/v1/apps`, {
+			const formData = await request.formData();
+			const appName = formData.get('appName');
+			const teamId = parseInt(params.teamId ?? '');
+			const res = await fetch(`${PUBLIC_API_BASE_URL}/app/v1/apps`, {
 				method: 'POST',
 				headers: {
 					Authorization: `Bearer ${sessionId}`,
@@ -35,6 +38,8 @@ export const teamService = {
 					errorMessage = body.message ?? 'Unknown error';
 				}
 
+				console.log(`[createAppAction] error creating app:${errorMessage}`);
+
 				return {
 					success: false,
 					errorMessage
@@ -48,12 +53,14 @@ export const teamService = {
 					errorMessage: 'No app id returned'
 				};
 			}
-			return {
-				success: true,
+			console.log({
 				data: {
 					id: body.id,
 					name: appName
 				}
+			});
+			return {
+				success: true
 			};
 		} catch (e) {
 			const errorMessage = (e as Error).message ?? 'Unknown error';
@@ -64,4 +71,4 @@ export const teamService = {
 			};
 		}
 	}
-};
+} satisfies Actions;

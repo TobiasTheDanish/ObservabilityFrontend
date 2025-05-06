@@ -1,9 +1,9 @@
-import { baseUrl } from '$lib/teamService';
 import { error } from '@sveltejs/kit';
-import type { PageLoad } from './$types';
+import type { PageServerLoad } from './$types';
 import type { FetchFn, ResourceUsage } from '$lib/types';
+import { PUBLIC_API_BASE_URL } from '$env/static/public';
 
-export const load: PageLoad = async ({ params, parent, fetch }) => {
+export const load: PageServerLoad = async ({ params, parent, fetch }) => {
 	const { sessionId } = await parent();
 	const resourceUsage = await getResourceUsage(params.id, sessionId, fetch);
 	const installationInfo = await getInfo(params.id, sessionId, fetch);
@@ -21,7 +21,7 @@ async function getResourceUsage(
 ): Promise<ResourceUsage> {
 	let res: Response;
 	try {
-		res = await fetchFn(`${baseUrl}/app/v1/installations/${id}/resources`, {
+		res = await fetchFn(`${PUBLIC_API_BASE_URL}/app/v1/installations/${id}/resources`, {
 			headers: {
 				Authorization: `Bearer ${sessionId}`
 			}
@@ -60,7 +60,7 @@ async function getResourceUsage(
 async function getInfo(id: string, sessionId: string, fetchFn: FetchFn): Promise<any> {
 	let res: Response;
 	try {
-		res = await fetchFn(`${baseUrl}/app/v1/installations/${id}`, {
+		res = await fetchFn(`${PUBLIC_API_BASE_URL}/app/v1/installations/${id}`, {
 			headers: {
 				Authorization: `Bearer ${sessionId}`
 			}

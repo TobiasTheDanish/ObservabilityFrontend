@@ -1,19 +1,16 @@
 <script lang="ts">
+	import { enhance } from '$app/forms';
 	import { goto } from '$app/navigation';
-	import { authService } from '$lib/authService';
 	import { sessionStore } from '$lib/store';
+	import type { ServiceResponse } from '$lib/types';
 
 	let username = $state('');
 	let password = $state('');
 	let error = $state<string>();
 	let loading = $state(false);
 
-	async function onsubmit(event: SubmitEvent) {
-		event.preventDefault();
-		console.log({ username, password });
-		error = undefined;
+	async function handleSignIn(signInRes: ServiceResponse<{ sessionId: string }>) {
 		loading = true;
-		const signInRes = await authService.signIn(username, password);
 		if (signInRes.success) {
 			sessionStore.set(signInRes.data.sessionId);
 			await goto('/');
@@ -24,14 +21,7 @@
 	}
 </script>
 
-<form {onsubmit} class="flex flex-col items-center justify-center gap-2">
-	{#if error != undefined}
-		<div class="padding-4 flex flex-col gap-1 text-red-600">
-			<p class="text-lg font-semibold tracking-tight">An error occured</p>
-			<p>{error}</p>
-		</div>
-	{/if}
-
+<form method="POST" use:enhance class="flex flex-col items-center justify-center gap-2">
 	<div class="flex max-w-[285px] flex-col">
 		<label for="username">Username</label>
 		<input id="username" name="username" placeholder="Input username..." bind:value={username} />

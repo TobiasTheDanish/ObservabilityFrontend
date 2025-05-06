@@ -1,7 +1,7 @@
 import { error } from '@sveltejs/kit';
 import type { LayoutLoad } from './$types';
-import { baseUrl, type Application, type FetchFn } from '$lib/teamService';
-import type { ServiceResponse } from '$lib/authService';
+import type { ServiceResponse, FetchFn, Application } from '$lib/types';
+import { PUBLIC_API_BASE_URL } from '$env/static/public';
 
 export const load: LayoutLoad = async ({ params, parent, fetch }) => {
 	try {
@@ -30,7 +30,7 @@ async function getApps(
 	fetchFn: FetchFn = fetch
 ): Promise<ServiceResponse<Application[]>> {
 	try {
-		const res = await fetchFn(`${baseUrl}/app/v1/teams/${teamId}/apps`, {
+		const res = await fetchFn(`${PUBLIC_API_BASE_URL}/app/v1/teams/${teamId}/apps`, {
 			headers: {
 				Authorization: `Bearer ${sessionId}`
 			}

@@ -1,25 +1,26 @@
-import { type ServiceResponse } from '$lib/authService';
-import { sessionStore } from '$lib/store';
-import { get } from 'svelte/store';
-import type { LayoutData } from '../$types';
-import { baseUrl, type FetchFn, type Team } from '$lib/teamService';
-import type { LoadEvent } from '@sveltejs/kit';
+//import { sessionStore } from '$lib/store';
+import type { LayoutServerLoad } from './$types';
+import type { ServiceResponse, FetchFn, Team } from '$lib/types';
+import { PUBLIC_API_BASE_URL } from '$env/static/public';
+import { redirect } from '@sveltejs/kit';
 
-export const load: LayoutData = async ({ fetch }: LoadEvent) => {
-	const sessionId = get(sessionStore);
+export const load: LayoutServerLoad = async ({ fetch, cookies }) => {
+	const sessionId = cookies.get('sessionId');
 	const authenticated = await validateSession(sessionId, fetch);
-	const teamRes = await getTeams(sessionId, fetch);
+	if (!authenticated.success) redirect(307, '/sign-in');
+
+	cookies.set('sessionId', authenticated.data, { path: '/' });
+	const teamRes = await getTeams(authenticated.data, fetch);
 	const teams = teamRes.success ? teamRes.data : [];
 
-	console.log({ sessionId, authenticated });
-	if (authenticated.success) {
-		sessionStore.set(authenticated.data);
-	} else {
-		sessionStore.set('');
-	}
+	// if (authenticated.success) {
+	// 	sessionStore.set(authenticated.data);
+	// } else {
+	// 	sessionStore.set('');
+	// }
 
 	return {
-		sessionId: authenticated.success ? authenticated.data : '',
+		sessionId: authenticated.data,
 		authenticated: authenticated.success,
 		teams
 	};
@@ -30,7 +31,7 @@ async function getTeams(
 	fetchFn: FetchFn = fetch
 ): Promise<ServiceResponse<Team[]>> {
 	try {
-		const res = await fetchFn(`${baseUrl}/app/v1/teams`, {
+		const res = await fetchFn(`${PUBLIC_API_BASE_URL}/app/v1/teams`, {
 			headers: {
 				Authorization: `Bearer ${sessionId}`
 			}
@@ -82,7 +83,7 @@ async function validateSession(
 	sessionId: string | undefined,
 	fetchFn: FetchFn
 ): Promise<ServiceResponse<string>> {
-	const res = await fetchFn(`${baseUrl}/auth/validate`, {
+	const res = await fetchFn(`${PUBLIC_API_BASE_URL}/auth/validate`, {
 		method: 'POST',
 		headers: {
 			Authorization: `Bearer ${sessionId}`,

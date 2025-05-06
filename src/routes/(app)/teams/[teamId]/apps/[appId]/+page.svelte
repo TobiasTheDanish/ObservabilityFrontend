@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { AppData } from '$lib/teamService';
+	import type { AppData } from '$lib/types';
 	import type { PageProps } from './$types';
 	import * as dateFns from 'date-fns';
 
@@ -8,6 +8,8 @@
 	};
 
 	const { data }: PageProps = $props();
+
+	console.log(data);
 
 	const sessions = $derived(data.appData.sessions);
 	const installations: InstallationUiState[] = $derived.by(() =>
