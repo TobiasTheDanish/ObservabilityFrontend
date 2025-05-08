@@ -7,17 +7,14 @@ import { redirect } from '@sveltejs/kit';
 export const load: LayoutServerLoad = async ({ fetch, cookies }) => {
 	const sessionId = cookies.get('sessionId');
 	const authenticated = await validateSession(sessionId, fetch);
-	if (!authenticated.success) redirect(307, '/sign-in');
+	if (!authenticated.success) {
+		cookies.delete('sessionId', { path: '/' });
+		redirect(307, '/sign-in');
+	}
 
 	cookies.set('sessionId', authenticated.data, { path: '/' });
 	const teamRes = await getTeams(authenticated.data, fetch);
 	const teams = teamRes.success ? teamRes.data : [];
-
-	// if (authenticated.success) {
-	// 	sessionStore.set(authenticated.data);
-	// } else {
-	// 	sessionStore.set('');
-	// }
 
 	return {
 		sessionId: authenticated.data,
