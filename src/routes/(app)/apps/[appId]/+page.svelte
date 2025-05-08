@@ -9,8 +9,6 @@
 
 	const { data }: PageProps = $props();
 
-	console.log(data);
-
 	const sessions = $derived(data.appData.sessions);
 	const installations: InstallationUiState[] = $derived.by(() =>
 		data.appData.installations.map((install) => ({

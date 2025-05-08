@@ -1,6 +1,6 @@
 import { error, redirect } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
-import type { ServiceResponse, AppData, FetchFn } from '$lib/types';
+import type { ServiceResponse, AppData, FetchFn, Application } from '$lib/types';
 import { PUBLIC_API_BASE_URL } from '$env/static/public';
 
 export const load: PageServerLoad = async ({ params, fetch, cookies }) => {
@@ -22,16 +22,14 @@ export const load: PageServerLoad = async ({ params, fetch, cookies }) => {
 		error(500, `Error getting app data: ${appDataRes.errorMessage}`);
 	}
 
-	return {
-		appData: appDataRes.data
-	};
+	return appDataRes.data;
 };
 
 async function getAppData(
 	sessionId: string,
 	appId: number,
 	fetchFn: FetchFn = fetch
-): Promise<ServiceResponse<AppData>> {
+): Promise<ServiceResponse<{ appData: AppData; app: Application }>> {
 	try {
 		const res = await fetchFn(`${PUBLIC_API_BASE_URL}/app/v1/apps/${appId}`, {
 			headers: {
@@ -60,6 +58,12 @@ async function getAppData(
 		}
 
 		const body = await res.json();
+		if (body.app === undefined) {
+			return {
+				success: false,
+				errorMessage: 'No app data returned'
+			};
+		}
 		if (body.appData === undefined) {
 			return {
 				success: false,
@@ -69,7 +73,8 @@ async function getAppData(
 		return {
 			success: true,
 			data: {
-				...body.appData
+				app: body.app,
+				appData: body.appData
 			}
 		};
 	} catch (e) {

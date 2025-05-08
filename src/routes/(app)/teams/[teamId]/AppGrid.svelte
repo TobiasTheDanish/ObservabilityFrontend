@@ -18,7 +18,7 @@
 			<p>No applications for this team...</p>
 		{/if}
 		{#each apps as app}
-			<a href={`/teams/${selected.id}/apps/${app.id}`}>{app.name}</a>
+			<a href={`/apps/${app.id}`}>{app.name}</a>
 		{/each}
 	</div>
 	<form method="POST" action="?/createApp" class="flex flex-col gap-2">
