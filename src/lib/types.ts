@@ -38,6 +38,10 @@ export type AppData = {
 	}[];
 };
 
+export type InstallationUiState = AppData['installations'][0] & {
+	sessions: AppData['sessions'];
+};
+
 export type ServiceErrorResponse<E extends Error> = {
 	success: false;
 	errorMessage: string;
