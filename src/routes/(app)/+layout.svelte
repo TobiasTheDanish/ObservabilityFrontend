@@ -14,4 +14,6 @@
 
 <Navbar {teams} />
 
-{@render children()}
+<main>
+	{@render children()}
+</main>

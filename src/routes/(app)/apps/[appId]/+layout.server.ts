@@ -1,9 +1,9 @@
 import { error, redirect } from '@sveltejs/kit';
-import type { PageServerLoad } from './$types';
+import type { LayoutServerLoad } from './$types';
 import type { ServiceResponse, AppData, FetchFn, Application } from '$lib/types';
 import { PUBLIC_API_BASE_URL } from '$env/static/public';
 
-export const load: PageServerLoad = async ({ params, fetch, cookies }) => {
+export const load: LayoutServerLoad = async ({ params, fetch, cookies }) => {
 	let appId;
 	try {
 		appId = parseInt(params.appId);
@@ -22,7 +22,10 @@ export const load: PageServerLoad = async ({ params, fetch, cookies }) => {
 		error(500, `Error getting app data: ${appDataRes.errorMessage}`);
 	}
 
-	return appDataRes.data;
+	return {
+		...appDataRes.data,
+		appId
+	};
 };
 
 async function getAppData(

@@ -1,7 +1,6 @@
 <script lang="ts">
 	import type { InstallationUiState } from '$lib/types';
 	import type { PageProps } from './$types';
-	import * as dateFns from 'date-fns';
 	import InstallationInfoCard from './InstallationInfoCard.svelte';
 	import SessionInfoCard from './SessionInfoCard.svelte';
 

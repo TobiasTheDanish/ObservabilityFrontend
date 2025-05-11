@@ -11,7 +11,7 @@
 	}
 </script>
 
-<div class="flex justify-between p-4">
+<div class="sticky top-0 z-50 flex justify-between bg-background p-4">
 	<div>
 		<TeamSelect {teams} />
 	</div>

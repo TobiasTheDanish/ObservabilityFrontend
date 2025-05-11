@@ -20,7 +20,7 @@
 		"@sveltejs/vite-plugin-svelte": "^5.0.0",
 		"@tailwindcss/vite": "^4.1.5",
 		"autoprefixer": "^10.4.21",
-		"bits-ui": "^1.4.6",
+		"bits-ui": "^1.4.7",
 		"clsx": "^2.1.1",
 		"postcss": "^8.5.3",
 		"prettier": "^3.4.2",
