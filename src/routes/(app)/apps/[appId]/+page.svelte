@@ -15,9 +15,12 @@
 	);
 </script>
 
-<p>{data.app.name}</p>
 <div class="grid grid-cols-4 gap-2">
-	<InstallationInfoCard {installations} />
+	<a href={`/apps/${data.app.id}/installations`}>
+		<InstallationInfoCard {installations} />
+	</a>
 
-	<SessionInfoCard {sessions} />
+	<a href={`/apps/${data.app.id}/sessions`}>
+		<SessionInfoCard {sessions} />
+	</a>
 </div>

@@ -6,8 +6,8 @@
 	const id = $derived(data.appId);
 </script>
 
-<div class="grid grid-cols-[200px_1fr]">
-	<AppSideBar {id} />
+<div class="grid md:grid-cols-[200px_1fr]">
+	<AppSideBar {id} appName={data.app.name} />
 
 	<div class="w-full">
 		{@render children()}
