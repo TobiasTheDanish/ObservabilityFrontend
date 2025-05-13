@@ -46,7 +46,6 @@ async function fetchSessionData(dataSessionId: string, sessionId: string, fetchF
 	}
 
 	const body = await res.json();
-	console.log({ body });
 	if (body.session === undefined) {
 		error(500, 'Malformed server response');
 	}

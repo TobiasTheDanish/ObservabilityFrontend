@@ -4,7 +4,6 @@ import { redirect, type Actions } from '@sveltejs/kit';
 export const actions = {
 	createApp: async ({ request, fetch, cookies, params }) => {
 		const sessionId = cookies.get('sessionId');
-		console.log(`[createAppAction] sessionId: ${sessionId}`);
 		if (sessionId === undefined) {
 			redirect(303, '/sign-in');
 		}
@@ -38,8 +37,6 @@ export const actions = {
 					errorMessage = body.message ?? 'Unknown error';
 				}
 
-				console.log(`[createAppAction] error creating app:${errorMessage}`);
-
 				return {
 					success: false,
 					errorMessage
@@ -53,12 +50,6 @@ export const actions = {
 					errorMessage: 'No app id returned'
 				};
 			}
-			console.log({
-				data: {
-					id: body.id,
-					name: appName
-				}
-			});
 			return {
 				success: true
 			};

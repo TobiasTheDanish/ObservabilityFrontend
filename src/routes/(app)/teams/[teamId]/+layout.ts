@@ -9,8 +9,6 @@ export const load: LayoutLoad = async ({ params, parent, fetch }) => {
 		const parentData = await parent();
 		const apps = await getApps(teamId, parentData.sessionId, fetch);
 
-		console.log({ teamId, parentData, apps });
-
 		if (!apps.success) {
 			error(500, apps.errorMessage);
 		}

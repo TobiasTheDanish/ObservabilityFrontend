@@ -2,10 +2,9 @@ import { PUBLIC_API_BASE_URL } from '$env/static/public';
 import { redirect, type Actions } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
 
-export const load: PageServerLoad = ({ locals }) => {
-	console.log(`[sign-in page.server] locals: ${JSON.stringify(locals)}`);
-
-	if (locals.sessionId !== undefined) {
+export const load: PageServerLoad = ({ cookies }) => {
+	const sessionId = cookies.get('sessionId');
+	if (sessionId !== undefined) {
 		redirect(303, '/');
 	}
 };
@@ -16,7 +15,6 @@ export const actions = {
 			const formData = await request.formData();
 			const username = formData.get('username');
 			const password = formData.get('password');
-			console.log({ username, password });
 
 			const res = await fetch(`${PUBLIC_API_BASE_URL}/auth/sign-in`, {
 				method: 'POST',
@@ -41,8 +39,6 @@ export const actions = {
 					errorMessage = body.message;
 				}
 
-				console.log({ body, errorMessage });
-
 				return {
 					success: false,
 					errorMessage
@@ -56,7 +52,6 @@ export const actions = {
 				};
 			}
 
-			console.log({ body });
 			cookies.set('sessionId', body.sessionId, { path: '/' });
 		} catch (e) {
 			const errorMessage = (e as Error).message ?? 'Unknown error';

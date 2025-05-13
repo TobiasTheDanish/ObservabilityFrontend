@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { goto } from '$app/navigation';
 	import type { Application, Team } from '$lib/types';
 
 	const {
@@ -9,13 +8,12 @@
 		selected: Team;
 		apps: Application[];
 	} = $props();
-	console.log({ selected, apps });
 </script>
 
 <div class="grid grid-cols-2 gap-2">
 	<div class="flex flex-col">
 		{#if apps.length == 0}
-			<p>No applications for this team...</p>
+			<p>No applications for {selected.name}...</p>
 		{/if}
 		{#each apps as app}
 			<a href={`/apps/${app.id}`}>{app.name}</a>
