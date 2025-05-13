@@ -9,15 +9,18 @@
 		resourceUsage: ResourceUsage;
 	} = $props();
 
-	const xAxis =
-		resourceUsage.memoryUsage?.map((m) => format(new Date(m.createdAt * 1000), 'HH:mm:ss')) ?? [];
+	const data = $derived.by(() =>
+		resourceUsage.memoryUsage?.sort((a, b) => a.createdAt - b.createdAt)
+	);
 
-	const largestMax =
-		resourceUsage.memoryUsage?.reduce(
-			(acc, cur) => (acc < cur.maxMemory ? cur.maxMemory : acc),
-			0
-		) ?? 0;
-	const maxY = largestMax + (10 - (largestMax % 10));
+	const xAxis = $derived.by(
+		() => data?.map((m) => format(new Date(m.createdAt), 'yyyy-MM-dd HH:mm:ss')) ?? []
+	);
+
+	const largestMax = $derived.by(
+		() => data?.reduce((acc, cur) => (acc < cur.maxMemory ? cur.maxMemory : acc), 0) ?? 0
+	);
+	const maxY = $derived(largestMax + (10 - (largestMax % 10)));
 </script>
 
 <div class="grid w-full grid-cols-3 gap-2">
@@ -41,7 +44,7 @@
 			],
 			series: [
 				{
-					data: resourceUsage?.memoryUsage?.map((m) => m.freeMemory) ?? [],
+					data: data?.map((m) => m.freeMemory) ?? [],
 					type: 'line',
 					areaStyle: {}
 				}
@@ -68,7 +71,7 @@
 			],
 			series: [
 				{
-					data: resourceUsage?.memoryUsage?.map((m) => m.usedMemory) ?? [],
+					data: data?.map((m) => m.usedMemory) ?? [],
 					type: 'line',
 					areaStyle: {}
 				}
@@ -95,7 +98,7 @@
 			],
 			series: [
 				{
-					data: resourceUsage?.memoryUsage?.map((m) => m.totalMemory) ?? [],
+					data: data?.map((m) => m.totalMemory) ?? [],
 					type: 'line',
 					areaStyle: {}
 				}
@@ -117,7 +120,7 @@
 			},
 			series: [
 				{
-					data: resourceUsage.memoryUsage?.map((m) => m.maxMemory) ?? [],
+					data: data?.map((m) => m.maxMemory) ?? [],
 					type: 'line',
 					areaStyle: {}
 				}
@@ -141,7 +144,7 @@
 			],
 			series: [
 				{
-					data: resourceUsage.memoryUsage?.map((m) => m.availableHeapSpace) ?? [],
+					data: data?.map((m) => m.availableHeapSpace) ?? [],
 					type: 'line',
 					areaStyle: {}
 				}

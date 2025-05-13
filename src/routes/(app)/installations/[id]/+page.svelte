@@ -3,7 +3,6 @@
 	import ResourceUsage from './ResourceUsage.svelte';
 
 	const { data }: PageProps = $props();
-	console.log({ data });
 </script>
 
 <p>Hello installation</p>

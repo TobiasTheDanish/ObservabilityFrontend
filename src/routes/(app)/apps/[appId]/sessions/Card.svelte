@@ -22,7 +22,7 @@
 				{session.crashed ? 'Crashed' : 'Not crashed'}
 			</p>
 			<p>
-				Created: {format(new Date(session.createdAt * 1000), 'yyyy-MM-dd')}
+				Created: {format(new Date(session.createdAt), 'yyyy-MM-dd')}
 			</p>
 		</CardContent>
 	</Card>
