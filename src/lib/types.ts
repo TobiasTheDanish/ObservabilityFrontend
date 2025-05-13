@@ -29,6 +29,7 @@ export type AppData = {
 		sdkVersion: number;
 		model: string;
 		brand: string;
+		createdAt: number;
 	}[];
 	sessions: {
 		id: string;
@@ -40,6 +41,10 @@ export type AppData = {
 
 export type InstallationUiState = AppData['installations'][0] & {
 	sessions: AppData['sessions'];
+};
+
+export type SessionUiState = AppData['sessions'][0] & {
+	installation: AppData['installations'][0] | undefined;
 };
 
 export type ServiceErrorResponse<E extends Error> = {

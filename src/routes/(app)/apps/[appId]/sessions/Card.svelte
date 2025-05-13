@@ -1,12 +1,18 @@
 <script lang="ts">
-	import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
-	import type { AppData } from '$lib/types';
+	import {
+		Card,
+		CardContent,
+		CardDescription,
+		CardHeader,
+		CardTitle
+	} from '$lib/components/ui/card';
+	import type { SessionUiState } from '$lib/types';
 	import { format } from 'date-fns';
 
 	const {
 		session
 	}: {
-		session: AppData['sessions'][0];
+		session: SessionUiState;
 	} = $props();
 </script>
 
@@ -16,13 +22,21 @@
 			<CardTitle>
 				{session.id}
 			</CardTitle>
+			<CardDescription>
+				{#if session.installation != undefined}
+					<p>{session.installation.brand} {session.installation.model}</p>
+					<p>{session.installation.id}</p>
+				{:else}
+					No installation found for this session
+				{/if}
+			</CardDescription>
 		</CardHeader>
 		<CardContent>
 			<p class={`${session.crashed ? 'text-red-600' : 'text-green-700'}`}>
 				{session.crashed ? 'Crashed' : 'Not crashed'}
 			</p>
 			<p>
-				Created: {format(new Date(session.createdAt), 'yyyy-MM-dd')}
+				Created: {format(new Date(session.createdAt), 'yyyy-MM-dd HH:mm')}
 			</p>
 		</CardContent>
 	</Card>

@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { PageProps } from './$types';
-	import ResourceUsage from './ResourceUsage.svelte';
+	import ResourceUsage from '$lib/components/ResourceUsage.svelte';
 
 	const { data }: PageProps = $props();
 </script>
