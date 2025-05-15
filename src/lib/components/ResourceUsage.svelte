@@ -9,6 +9,15 @@
 		resourceUsage: ResourceUsage;
 	} = $props();
 
+	function formatBytes(bytes: number): string {
+		if (bytes === 0) return '0 B';
+		const k = 1024;
+		const sizes = ['B', 'KB', 'MB', 'GB', 'TB'];
+		const i = Math.floor(Math.log(bytes) / Math.log(k));
+		const value = bytes / Math.pow(k, i);
+		return `${value.toFixed(1)} ${sizes[i]}`;
+	}
+
 	const data = $derived.by(() =>
 		resourceUsage.memoryUsage?.sort((a, b) => a.createdAt - b.createdAt)
 	);
@@ -28,7 +37,10 @@
 		class="h-[250px]"
 		id="free-memory-chart"
 		options={{
-			tooltip: {},
+			tooltip: {
+				trigger: 'axis',
+				valueFormatter: (value) => formatBytes(value as number)
+			},
 			legend: {},
 			title: {
 				text: 'Free memory'
@@ -39,7 +51,9 @@
 			},
 			yAxis: [
 				{
-					max: maxY
+					axisLabel: {
+						formatter: formatBytes
+					}
 				}
 			],
 			series: [
@@ -55,7 +69,10 @@
 		class="h-[250px]"
 		id="used-memory-chart"
 		options={{
-			tooltip: {},
+			tooltip: {
+				trigger: 'axis',
+				valueFormatter: (value) => formatBytes(value as number)
+			},
 			legend: {},
 			title: {
 				text: 'Used memory'
@@ -66,7 +83,9 @@
 			},
 			yAxis: [
 				{
-					max: maxY
+					axisLabel: {
+						formatter: formatBytes
+					}
 				}
 			],
 			series: [
@@ -82,7 +101,10 @@
 		class="h-[250px]"
 		id="total-memory-chart"
 		options={{
-			tooltip: {},
+			tooltip: {
+				trigger: 'axis',
+				valueFormatter: (value) => formatBytes(value as number)
+			},
 			legend: {},
 			title: {
 				text: 'Total memory'
@@ -93,7 +115,9 @@
 			},
 			yAxis: [
 				{
-					max: maxY
+					axisLabel: {
+						formatter: formatBytes
+					}
 				}
 			],
 			series: [
@@ -109,14 +133,19 @@
 		class="h-[250px]"
 		id="max-memory-chart"
 		options={{
-			tooltip: {},
+			tooltip: {
+				trigger: 'axis',
+				valueFormatter: (value) => formatBytes(value as number)
+			},
 			legend: {},
 			xAxis: {
 				type: 'category',
 				data: xAxis
 			},
 			yAxis: {
-				max: maxY
+				axisLabel: {
+					formatter: formatBytes
+				}
 			},
 			series: [
 				{
@@ -131,7 +160,10 @@
 		class="h-[250px]"
 		id="available-heap-space-chart"
 		options={{
-			tooltip: {},
+			tooltip: {
+				trigger: 'axis',
+				valueFormatter: (value) => formatBytes(value as number)
+			},
 			legend: {},
 			xAxis: {
 				type: 'category',
@@ -139,7 +171,9 @@
 			},
 			yAxis: [
 				{
-					max: maxY
+					axisLabel: {
+						formatter: formatBytes
+					}
 				}
 			],
 			series: [
