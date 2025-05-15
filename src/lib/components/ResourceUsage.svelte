@@ -26,89 +26,25 @@
 		() => data?.map((m) => format(new Date(m.createdAt), 'yyyy-MM-dd HH:mm:ss')) ?? []
 	);
 
-	const largestMax = $derived.by(
-		() => data?.reduce((acc, cur) => (acc < cur.maxMemory ? cur.maxMemory : acc), 0) ?? 0
+	const lowestAvailableHeapSpace = $derived.by(
+		() =>
+			data?.reduce(
+				(acc, cur) => (cur.availableHeapSpace < acc ? cur.availableHeapSpace : acc),
+				Number.MAX_SAFE_INTEGER
+			) ?? 0
 	);
-	const maxY = $derived(largestMax + (10 - (largestMax % 10)));
 </script>
 
 <div class="grid w-full grid-cols-3 gap-2">
 	<Chart
-		class="h-[250px]"
-		id="free-memory-chart"
+		class=""
+		id="memory-usage-chart"
 		options={{
 			tooltip: {
 				trigger: 'axis',
 				valueFormatter: (value) => formatBytes(value as number)
 			},
 			legend: {},
-			title: {
-				text: 'Free memory'
-			},
-			xAxis: {
-				type: 'category',
-				data: xAxis
-			},
-			yAxis: [
-				{
-					axisLabel: {
-						formatter: formatBytes
-					}
-				}
-			],
-			series: [
-				{
-					data: data?.map((m) => m.freeMemory) ?? [],
-					type: 'line',
-					areaStyle: {}
-				}
-			]
-		}}
-	/>
-	<Chart
-		class="h-[250px]"
-		id="used-memory-chart"
-		options={{
-			tooltip: {
-				trigger: 'axis',
-				valueFormatter: (value) => formatBytes(value as number)
-			},
-			legend: {},
-			title: {
-				text: 'Used memory'
-			},
-			xAxis: {
-				type: 'category',
-				data: xAxis
-			},
-			yAxis: [
-				{
-					axisLabel: {
-						formatter: formatBytes
-					}
-				}
-			],
-			series: [
-				{
-					data: data?.map((m) => m.usedMemory) ?? [],
-					type: 'line',
-					areaStyle: {}
-				}
-			]
-		}}
-	/>
-	<Chart
-		class="h-[250px]"
-		id="total-memory-chart"
-		options={{
-			tooltip: {
-				trigger: 'axis',
-				valueFormatter: (value) => formatBytes(value as number)
-			},
-			legend: {},
-			title: {
-				text: 'Total memory'
-			},
 			xAxis: {
 				type: 'category',
 				data: xAxis
@@ -124,14 +60,27 @@
 				{
 					data: data?.map((m) => m.totalMemory) ?? [],
 					type: 'line',
-					areaStyle: {}
+					areaStyle: {},
+					name: 'Total'
+				},
+				{
+					data: data?.map((m) => m.usedMemory) ?? [],
+					type: 'line',
+					areaStyle: {},
+					name: 'Used'
+				},
+				{
+					data: data?.map((m) => m.freeMemory) ?? [],
+					type: 'line',
+					areaStyle: {},
+					name: 'Free'
 				}
 			]
 		}}
 	/>
 	<Chart
 		class="h-[250px]"
-		id="max-memory-chart"
+		id="heap-space-chart"
 		options={{
 			tooltip: {
 				trigger: 'axis',
@@ -143,6 +92,7 @@
 				data: xAxis
 			},
 			yAxis: {
+				min: lowestAvailableHeapSpace * 0.98,
 				axisLabel: {
 					formatter: formatBytes
 				}
@@ -151,14 +101,21 @@
 				{
 					data: data?.map((m) => m.maxMemory) ?? [],
 					type: 'line',
-					areaStyle: {}
+					areaStyle: {},
+					name: 'Max space'
+				},
+				{
+					data: data?.map((m) => m.availableHeapSpace) ?? [],
+					type: 'line',
+					areaStyle: {},
+					name: 'Available'
 				}
 			]
 		}}
 	/>
 	<Chart
 		class="h-[250px]"
-		id="available-heap-space-chart"
+		id="all-chart"
 		options={{
 			tooltip: {
 				trigger: 'axis',
@@ -169,18 +126,43 @@
 				type: 'category',
 				data: xAxis
 			},
-			yAxis: [
-				{
-					axisLabel: {
-						formatter: formatBytes
-					}
+			yAxis: {
+				type: 'value',
+				//min: lowestAvailableHeapSpace * 0.98,
+				axisLabel: {
+					formatter: formatBytes
 				}
-			],
+			},
 			series: [
+				{
+					data: data?.map((m) => m.maxMemory) ?? [],
+					type: 'line',
+					areaStyle: {},
+					name: 'Max space'
+				},
 				{
 					data: data?.map((m) => m.availableHeapSpace) ?? [],
 					type: 'line',
-					areaStyle: {}
+					areaStyle: {},
+					name: 'Available'
+				},
+				{
+					data: data?.map((m) => m.totalMemory) ?? [],
+					type: 'line',
+					areaStyle: {},
+					name: 'Total'
+				},
+				{
+					data: data?.map((m) => m.usedMemory) ?? [],
+					type: 'line',
+					areaStyle: {},
+					name: 'Used'
+				},
+				{
+					data: data?.map((m) => m.freeMemory) ?? [],
+					type: 'line',
+					areaStyle: {},
+					name: 'Free'
 				}
 			]
 		}}
