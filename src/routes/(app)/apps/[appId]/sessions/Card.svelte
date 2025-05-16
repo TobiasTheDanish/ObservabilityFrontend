@@ -24,8 +24,9 @@
 			</CardTitle>
 			<CardDescription>
 				{#if session.installation != undefined}
-					<p>{session.installation.brand} {session.installation.model}</p>
-					<p>{session.installation.id}</p>
+					{session.installation.brand}
+					{session.installation.model}<br />
+					{session.installation.id}
 				{:else}
 					No installation found for this session
 				{/if}

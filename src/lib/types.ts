@@ -67,7 +67,8 @@ export type FetchFn = (input: RequestInfo | URL, init?: RequestInit) => Promise<
 import type {
 	// The series option types are defined with the SeriesOption suffix
 	BarSeriesOption,
-	LineSeriesOption
+	LineSeriesOption,
+	PieSeriesOption
 } from 'echarts/charts';
 import type {
 	// The component option types are defined with the ComponentOption suffix
@@ -82,6 +83,7 @@ import type { ComposeOption } from 'echarts/core';
 export type ECOption = ComposeOption<
 	| BarSeriesOption
 	| LineSeriesOption
+	| PieSeriesOption
 	| TitleComponentOption
 	| TooltipComponentOption
 	| GridComponentOption

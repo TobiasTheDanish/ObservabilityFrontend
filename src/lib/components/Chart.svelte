@@ -1,13 +1,20 @@
 <script lang="ts">
 	import * as echarts from 'echarts/core';
 	import { GridComponent, LegendComponent, TooltipComponent } from 'echarts/components';
-	import { LineChart } from 'echarts/charts';
+	import { LineChart, PieChart } from 'echarts/charts';
 	import { CanvasRenderer } from 'echarts/renderers';
 	import type { ECOption } from '$lib/types';
 	import type { HTMLAttributes } from 'svelte/elements';
 	import type { Action } from 'svelte/action';
 
-	echarts.use([GridComponent, LineChart, CanvasRenderer, LegendComponent, TooltipComponent]);
+	echarts.use([
+		GridComponent,
+		LineChart,
+		PieChart,
+		CanvasRenderer,
+		LegendComponent,
+		TooltipComponent
+	]);
 
 	type Props = HTMLAttributes<HTMLDivElement> & {
 		options: ECOption;

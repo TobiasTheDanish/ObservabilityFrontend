@@ -7,7 +7,7 @@
 		CardContent
 	} from '$lib/components/ui/card';
 	import type { InstallationUiState } from '$lib/types';
-	import { format } from 'date-fns';
+	import { format, isAfter, startOfDay } from 'date-fns';
 	const {
 		installations
 	}: {
@@ -18,6 +18,10 @@
 	const latestInstallation = $derived.by(() => {
 		return installations.sort((a, b) => b.createdAt - a.createdAt)?.at(0);
 	});
+
+	const newToday = $derived.by(
+		() => installations.filter((i) => isAfter(i.createdAt, startOfDay(new Date()))).length
+	);
 </script>
 
 <Card>
@@ -31,5 +35,6 @@
 	</CardHeader>
 	<CardContent>
 		<p><span class="me-1 font-semibold italic">Total: </span>{totalCount}</p>
+		<p>New: {newToday}</p>
 	</CardContent>
 </Card>
