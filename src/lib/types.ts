@@ -23,28 +23,81 @@ export type Application = {
 	name: string;
 };
 
+export type Installation = {
+	id: string;
+	sdkVersion: number;
+	model: string;
+	brand: string;
+	createdAt: number;
+};
+
+export type Session = {
+	id: string;
+	installationId: string;
+	createdAt: number;
+	crashed: boolean;
+};
+
 export type AppData = {
-	installations: {
-		id: string;
-		sdkVersion: number;
-		model: string;
-		brand: string;
-		createdAt: number;
-	}[];
-	sessions: {
-		id: string;
-		installationId: string;
-		createdAt: number;
-		crashed: boolean;
-	}[];
+	installations: Installation[];
+	sessions: Session[];
 };
 
-export type InstallationUiState = AppData['installations'][0] & {
-	sessions: AppData['sessions'];
+export type InstallationUiState = Installation & {
+	sessions: Session;
 };
 
-export type SessionUiState = AppData['sessions'][0] & {
-	installation: AppData['installations'][0] | undefined;
+export type SessionUiState = Session & {
+	installation: Installation | undefined;
+};
+
+export type AndroidEvent =
+	| AndroidLifecycleAppEvent
+	| AndroidLifecycleActivityEvent
+	| AndroidNavigationEvent
+	| AndroidExceptionEvent
+	| AndroidCustomEvent;
+
+export type AndroidBaseEvent = {
+	id: string;
+	sessionId: string;
+	createdAt: number;
+};
+
+export type AndroidLifecycleAppEvent = AndroidBaseEvent & {
+	type: 'lifecycle_app';
+	serializedData?: {
+		type: 'background' | 'foreground';
+	};
+};
+
+export type AndroidLifecycleActivityEvent = AndroidBaseEvent & {
+	type: 'lifecycle_activity';
+	serializedData?: {
+		type: 'resumed' | 'paused' | 'started' | 'stopped';
+		className: string;
+	};
+};
+
+export type AndroidNavigationEvent = AndroidBaseEvent & {
+	type: 'navigation';
+	serializedData?: {
+		route: string;
+	};
+};
+
+export type AndroidExceptionEvent = AndroidBaseEvent & {
+	type: 'exception';
+	serializedData?: {
+		threadName: string;
+		handled: boolean;
+		exceptionUnits: any[];
+	};
+};
+
+export type AndroidCustomEvent = AndroidBaseEvent & {
+	type: 'custom';
+	serializedData?: any;
 };
 
 export type ServiceErrorResponse<E extends Error> = {
