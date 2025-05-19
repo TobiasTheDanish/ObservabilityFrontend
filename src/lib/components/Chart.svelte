@@ -1,6 +1,11 @@
 <script lang="ts">
 	import * as echarts from 'echarts/core';
-	import { GridComponent, LegendComponent, TooltipComponent } from 'echarts/components';
+	import {
+		GridComponent,
+		LegendComponent,
+		TooltipComponent,
+		TitleComponent
+	} from 'echarts/components';
 	import { LineChart, PieChart } from 'echarts/charts';
 	import { CanvasRenderer } from 'echarts/renderers';
 	import type { ECOption } from '$lib/types';
@@ -13,7 +18,8 @@
 		PieChart,
 		CanvasRenderer,
 		LegendComponent,
-		TooltipComponent
+		TooltipComponent,
+		TitleComponent
 	]);
 
 	type Props = HTMLAttributes<HTMLDivElement> & {

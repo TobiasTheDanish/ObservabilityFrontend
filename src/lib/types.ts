@@ -51,6 +51,29 @@ export type SessionUiState = Session & {
 	installation: Installation | undefined;
 };
 
+export type TraceTree = {
+	root: TraceTreeNode;
+};
+
+export type TraceTreeNode = {
+	depth: number;
+	data: Trace[];
+	children: TraceTreeNode[];
+};
+
+export type Trace = {
+	traceId: string;
+	sessionId: string;
+	groupId: string;
+	parentId: string;
+	name: string;
+	status: string;
+	errorMessage: string;
+	startTime: number;
+	endTime: number;
+	hasEnded: boolean;
+};
+
 export type AndroidEvent =
 	| AndroidLifecycleAppEvent
 	| AndroidLifecycleActivityEvent
