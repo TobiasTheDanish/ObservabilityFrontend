@@ -57,6 +57,7 @@ export type TraceTree = {
 
 export type TraceTreeNode = {
 	depth: number;
+	name: string;
 	data: Trace[];
 	children: TraceTreeNode[];
 };

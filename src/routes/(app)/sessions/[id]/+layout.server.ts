@@ -1,16 +1,9 @@
 import { error, redirect } from '@sveltejs/kit';
-import type { PageServerLoad } from './$types';
-import type {
-	AndroidEvent,
-	FetchFn,
-	ResourceUsage,
-	Trace,
-	TraceTree,
-	TraceTreeNode
-} from '$lib/types';
+import type { LayoutServerLoad } from './$types';
+import type { AndroidEvent, FetchFn, ResourceUsage, Trace, TraceTreeNode } from '$lib/types';
 import { PUBLIC_API_BASE_URL } from '$env/static/public';
 
-export const load: PageServerLoad = async ({ params, cookies, fetch }) => {
+export const load: LayoutServerLoad = async ({ params, cookies, fetch }) => {
 	const dataSessionId = params.id;
 	const sessionId = cookies.get('sessionId');
 	if (sessionId === undefined) {
@@ -19,13 +12,15 @@ export const load: PageServerLoad = async ({ params, cookies, fetch }) => {
 
 	const sessionData = await fetchSessionData(dataSessionId, sessionId, fetch);
 	const events = await getSessionEvents(dataSessionId, sessionId, fetch);
-	const traceTree = await getSessionTraceTree(dataSessionId, sessionId, fetch);
+	const traces = await getSessionTraceTree(dataSessionId, sessionId, fetch);
 	const resourceUsage = await getResourceUsage(dataSessionId, sessionId, fetch);
 
 	return {
+		id: dataSessionId,
 		sessionData,
 		events,
-		traceTree,
+		traces,
+		traceTree: buildTraceTree(traces).map((root) => ({ root })),
 		resourceUsage
 	};
 };
@@ -118,7 +113,7 @@ async function getSessionTraceTree(
 	id: string,
 	sessionId: string,
 	fetchFn: FetchFn
-): Promise<TraceTree[]> {
+): Promise<Trace[]> {
 	let res: Response;
 	try {
 		res = await fetchFn(`${PUBLIC_API_BASE_URL}/app/v1/sessions/${id}/traces`, {
@@ -154,10 +149,7 @@ async function getSessionTraceTree(
 		error(500, 'Malformed server response');
 	}
 
-	const traces: Trace[] = body.traces;
-	const roots: TraceTreeNode[] = buildTraceTree(traces);
-
-	return roots.map((root) => ({ root }));
+	return body.traces;
 }
 
 function buildTraceTree(traces: Trace[], parentId: string = '', depth: number = 0) {
@@ -182,8 +174,9 @@ function buildTraceTree(traces: Trace[], parentId: string = '', depth: number = 
 		uniqueRoots[root.name].push(root);
 	}
 
-	const rootNodes: TraceTreeNode[] = Object.values(uniqueRoots).map((r) => ({
+	const rootNodes: TraceTreeNode[] = Object.entries(uniqueRoots).map(([name, r]) => ({
 		depth,
+		name,
 		data: r,
 		children: r
 			.map((t) => buildTraceTree(rest, t.traceId, depth + 1))
