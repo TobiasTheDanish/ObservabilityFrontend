@@ -1,4 +1,4 @@
-import type { Trace } from '$lib/types';
+import type { GraphTree, GraphTreeNode, Trace } from '$lib/types';
 import type { PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async ({ params, parent }) => {
@@ -13,7 +13,7 @@ export const load: PageServerLoad = async ({ params, parent }) => {
 	};
 };
 
-function buildTree(traces: Trace[]): Tree | undefined {
+function buildTree(traces: Trace[]): GraphTree | undefined {
 	const root = traces.find((t) => t.parentId == '');
 	if (root == undefined) return undefined;
 	const rest = traces.filter((t) => t.traceId != root.traceId);
@@ -25,7 +25,7 @@ function buildTree(traces: Trace[]): Tree | undefined {
 	};
 }
 
-function getChildren(traces: Trace[], parentId: string, depth: number): TreeNode[] {
+function getChildren(traces: Trace[], parentId: string, depth: number): GraphTreeNode[] {
 	const children: Trace[] = [];
 	const rest: Trace[] = [];
 	for (let trace of traces) {
@@ -45,11 +45,3 @@ function getChildren(traces: Trace[], parentId: string, depth: number): TreeNode
 		children: getChildren(rest, c.traceId, depth + 1)
 	}));
 }
-
-type Tree = TreeNode;
-
-type TreeNode = {
-	depth: number;
-	data: Trace;
-	children: TreeNode[];
-};

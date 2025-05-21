@@ -9,11 +9,7 @@
 	const trees = $derived.by(() => {
 		return data.traceTree.sort((a, b) => b.root.data.length - a.root.data.length);
 	});
-
-	console.log((() => trees)());
 </script>
-
-<p>Hello session</p>
 
 <pre>{JSON.stringify(data.sessionData ?? 'No data', null, 2)}</pre>
 

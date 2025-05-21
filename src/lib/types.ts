@@ -51,17 +51,6 @@ export type SessionUiState = Session & {
 	installation: Installation | undefined;
 };
 
-export type TraceTree = {
-	root: TraceTreeNode;
-};
-
-export type TraceTreeNode = {
-	depth: number;
-	name: string;
-	data: Trace[];
-	children: TraceTreeNode[];
-};
-
 export type Trace = {
 	traceId: string;
 	sessionId: string;
@@ -73,6 +62,25 @@ export type Trace = {
 	startTime: number;
 	endTime: number;
 	hasEnded: boolean;
+};
+
+export type GraphTree = GraphTreeNode;
+
+export type GraphTreeNode = {
+	depth: number;
+	data: Trace;
+	children: GraphTreeNode[];
+};
+
+export type TraceTree = {
+	root: TraceTreeNode;
+};
+
+export type TraceTreeNode = {
+	depth: number;
+	name: string;
+	data: Trace[];
+	children: TraceTreeNode[];
 };
 
 export type AndroidEvent =
@@ -144,6 +152,7 @@ export type FetchFn = (input: RequestInfo | URL, init?: RequestInit) => Promise<
 import type {
 	// The series option types are defined with the SeriesOption suffix
 	BarSeriesOption,
+	CustomSeriesOption,
 	LineSeriesOption,
 	PieSeriesOption
 } from 'echarts/charts';
@@ -161,6 +170,7 @@ export type ECOption = ComposeOption<
 	| BarSeriesOption
 	| LineSeriesOption
 	| PieSeriesOption
+	| CustomSeriesOption
 	| TitleComponentOption
 	| TooltipComponentOption
 	| GridComponentOption

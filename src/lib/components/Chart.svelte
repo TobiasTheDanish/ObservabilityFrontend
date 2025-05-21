@@ -6,7 +6,7 @@
 		TooltipComponent,
 		TitleComponent
 	} from 'echarts/components';
-	import { LineChart, PieChart } from 'echarts/charts';
+	import { CustomChart, LineChart, PieChart } from 'echarts/charts';
 	import { CanvasRenderer } from 'echarts/renderers';
 	import type { ECOption } from '$lib/types';
 	import type { HTMLAttributes } from 'svelte/elements';
@@ -16,6 +16,7 @@
 		GridComponent,
 		LineChart,
 		PieChart,
+		CustomChart,
 		CanvasRenderer,
 		LegendComponent,
 		TooltipComponent,
