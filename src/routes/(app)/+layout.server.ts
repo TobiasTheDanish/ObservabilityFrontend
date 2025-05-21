@@ -18,7 +18,6 @@ export const load: LayoutServerLoad = async ({ fetch, cookies }) => {
 
 	return {
 		sessionId: authenticated.data,
-		authenticated: authenticated.success,
 		teams
 	};
 };

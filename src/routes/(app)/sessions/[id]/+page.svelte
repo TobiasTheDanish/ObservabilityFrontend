@@ -5,6 +5,12 @@
 	import TraceTrees from '$lib/components/trace/TraceTrees.svelte';
 
 	const { data }: PageProps = $props();
+	const events = $derived.by(() => data.events.sort((a, b) => b.createdAt - a.createdAt));
+	const trees = $derived.by(() => {
+		return data.traceTree.sort((a, b) => b.root.data.length - a.root.data.length);
+	});
+
+	console.log((() => trees)());
 </script>
 
 <p>Hello session</p>
@@ -13,11 +19,11 @@
 
 <ResourceUsage resourceUsage={data.resourceUsage} />
 
-<TraceTrees trees={data.traceTree} />
+<TraceTrees {trees} />
 
-{#if data.events.length > 0}
+{#if events.length > 0}
 	<div class="flex flex-col gap-4 p-4">
-		{#each data.events as event}
+		{#each events as event}
 			<EventCard {event} />
 		{/each}
 	</div>

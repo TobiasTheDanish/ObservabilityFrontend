@@ -40,11 +40,19 @@
 		class=""
 		id="memory-usage-chart"
 		options={{
+			title: {
+				text: 'Used/free memory',
+					left: 'center',
+					top: 'top',
+			},
 			tooltip: {
 				trigger: 'axis',
 				valueFormatter: (value) => formatBytes(value as number)
 			},
-			legend: {},
+				legend: {
+					left: 'center',
+					top: 'bottom',
+				},
 			xAxis: {
 				type: 'category',
 				data: xAxis
@@ -82,11 +90,19 @@
 		class="h-[250px]"
 		id="heap-space-chart"
 		options={{
+			title: {
+				text: 'Heap space',
+					left: 'center',
+					top: 'top',
+			},
 			tooltip: {
 				trigger: 'axis',
 				valueFormatter: (value) => formatBytes(value as number)
 			},
-			legend: {},
+				legend: {
+					left: 'center',
+					top: 'bottom',
+				},
 			xAxis: {
 				type: 'category',
 				data: xAxis
@@ -117,11 +133,19 @@
 		class="h-[250px]"
 		id="all-chart"
 		options={{
+			title: {
+				text: 'All',
+					left: 'center',
+					top: 'top',
+			},
 			tooltip: {
 				trigger: 'axis',
 				valueFormatter: (value) => formatBytes(value as number)
 			},
-			legend: {},
+				legend: {
+					left: 'center',
+					top: 'bottom',
+				},
 			xAxis: {
 				type: 'category',
 				data: xAxis

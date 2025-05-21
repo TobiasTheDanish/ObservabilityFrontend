@@ -14,11 +14,6 @@
 <Chart
 	class="h-[250px]"
 	options={{
-		title: {
-			text: 'A Case of Doughnut Chart',
-			left: 'center',
-			top: 'center'
-		},
 		series: [
 			{
 				type: 'pie',

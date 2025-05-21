@@ -3,6 +3,7 @@
 	import { selectedTeam } from '$lib/state.svelte';
 
 	const { teams } = $props();
+	/*
 	$effect(() => {
 		if (selectedTeam.selected !== undefined) {
 			goto(`/teams/${selectedTeam.selected?.id}`, {
@@ -10,6 +11,7 @@
 			});
 		}
 	});
+	*/
 </script>
 
 <select bind:value={selectedTeam.selected} placeholder="Select team">
