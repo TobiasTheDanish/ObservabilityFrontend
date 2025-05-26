@@ -1,24 +1,39 @@
-//import { sessionStore } from '$lib/store';
 import type { LayoutServerLoad } from './$types';
 import type { ServiceResponse, FetchFn, Team } from '$lib/types';
 import { PUBLIC_API_BASE_URL } from '$env/static/public';
 import { redirect } from '@sveltejs/kit';
 
-export const load: LayoutServerLoad = async ({ fetch, cookies }) => {
+export const load: LayoutServerLoad = async ({ fetch, cookies, url, params }) => {
 	const sessionId = cookies.get('sessionId');
 	const authenticated = await validateSession(sessionId, fetch);
 	if (!authenticated.success) {
 		cookies.delete('sessionId', { path: '/' });
 		redirect(307, '/sign-in');
 	}
-
 	cookies.set('sessionId', authenticated.data, { path: '/' });
+
+	let selectedTeamId = cookies.get('teamId');
+	if (selectedTeamId == undefined && params.teamId != undefined) {
+		selectedTeamId = params.teamId;
+		cookies.set('teamId', selectedTeamId, { path: '/' });
+	}
+	if (selectedTeamId == undefined && url.pathname != '/') {
+		redirect(307, '/');
+	}
 	const teamRes = await getTeams(authenticated.data, fetch);
 	const teams = teamRes.success ? teamRes.data : [];
+	const selectedTeam = teams.find((t) => t.id.toString(10) == selectedTeamId);
+
+	if (selectedTeam == undefined && url.pathname != '/') {
+		redirect(307, '/');
+	}
+
+	console.log({ selectedTeam });
 
 	return {
 		sessionId: authenticated.data,
-		teams
+		teams,
+		selectedTeam
 	};
 };
 

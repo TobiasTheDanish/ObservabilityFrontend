@@ -4,10 +4,10 @@
 
 	const { data, children }: LayoutProps = $props();
 
-	const { teams } = data;
+	const { teams, selectedTeam } = data;
 </script>
 
-<Navbar {teams} />
+<Navbar {selectedTeam} {teams} />
 
 <main>
 	{@render children()}

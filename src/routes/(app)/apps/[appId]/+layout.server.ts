@@ -17,14 +17,21 @@ export const load: LayoutServerLoad = async ({ params, fetch, cookies }) => {
 		redirect(303, '/sign-in');
 	}
 
+	const teamId = cookies.get('teamId');
+	if (teamId == undefined) {
+		redirect(307, '/');
+	}
+
 	const appDataRes = await getAppData(sessionId, appId, fetch);
 	if (!appDataRes.success) {
 		error(500, `Error getting app data: ${appDataRes.errorMessage}`);
 	}
+	cookies.set('appId', appId.toString(10), { path: '/' });
 
 	return {
 		...appDataRes.data,
-		appId
+		appId,
+		teamId
 	};
 };
 

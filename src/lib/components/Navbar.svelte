@@ -1,12 +1,19 @@
 <script lang="ts">
+	import type { Team } from '$lib/types';
 	import TeamSelect from './TeamSelect.svelte';
 
-	const { teams } = $props();
+	const {
+		selectedTeam,
+		teams
+	}: {
+		selectedTeam: Team | undefined;
+		teams: Team[];
+	} = $props();
 </script>
 
 <div class="sticky top-0 z-50 flex justify-between bg-background p-4">
 	<div>
-		<TeamSelect {teams} />
+		<TeamSelect {selectedTeam} {teams} />
 	</div>
 	<div>
 		<form method="POST" action="/sign-out">

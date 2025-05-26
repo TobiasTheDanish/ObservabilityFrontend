@@ -4,10 +4,11 @@
 
 	const { data, children }: LayoutProps = $props();
 	const id = $derived(data.id);
+	const appId = $derived(data.appId);
 </script>
 
 <div class="grid md:grid-cols-[200px_1fr]">
-	<SessionSideBar {id} />
+	<SessionSideBar {appId} {id} />
 
 	<div class="w-[calc(98vw-200px)]">
 		{@render children()}

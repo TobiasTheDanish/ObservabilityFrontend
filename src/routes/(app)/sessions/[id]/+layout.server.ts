@@ -10,6 +10,16 @@ export const load: LayoutServerLoad = async ({ params, cookies, fetch }) => {
 		redirect(303, '/sign-in');
 	}
 
+	const appId = cookies.get('appId');
+	if (appId == undefined) {
+		const teamId = cookies.get('teamId');
+		if (teamId == undefined) {
+			redirect(307, '/');
+		} else {
+			redirect(307, `/teams/${teamId}`);
+		}
+	}
+
 	const sessionData = await fetchSessionData(dataSessionId, sessionId, fetch);
 	const events = await getSessionEvents(dataSessionId, sessionId, fetch);
 	const traces = await getSessionTraceTree(dataSessionId, sessionId, fetch);
@@ -21,7 +31,8 @@ export const load: LayoutServerLoad = async ({ params, cookies, fetch }) => {
 		events,
 		traces,
 		traceTree: buildTraceTree(traces).map((root) => ({ root })),
-		resourceUsage
+		resourceUsage,
+		appId
 	};
 };
 

@@ -1,11 +1,12 @@
 import { error } from '@sveltejs/kit';
-import type { LayoutLoad } from './$types';
+import type { LayoutServerLoad } from './$types';
 import type { ServiceResponse, FetchFn, Application } from '$lib/types';
 import { PUBLIC_API_BASE_URL } from '$env/static/public';
 
-export const load: LayoutLoad = async ({ params, parent, fetch }) => {
+export const load: LayoutServerLoad = async ({ params, parent, fetch, cookies }) => {
 	try {
 		const teamId = parseInt(params.teamId);
+		cookies.set('teamId', teamId.toString(10), { path: '/' });
 		const parentData = await parent();
 		const apps = await getApps(teamId, parentData.sessionId, fetch);
 
@@ -14,7 +15,7 @@ export const load: LayoutLoad = async ({ params, parent, fetch }) => {
 		}
 
 		return {
-			selectedTeam: parentData.teams.find((t) => t.id === teamId),
+			//selectedTeam: parentData.teams.find((t) => t.id === teamId),
 			apps: apps.data
 		};
 	} catch (e) {
