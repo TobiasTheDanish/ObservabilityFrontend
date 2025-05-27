@@ -19,6 +19,9 @@ export const load: LayoutServerLoad = async ({ fetch, cookies, url, params }) =>
 	}
 	if (selectedTeamId == undefined && url.pathname != '/') {
 		redirect(307, '/');
+	} else if (selectedTeamId != undefined && url.pathname == '/') {
+		cookies.delete('teamId', { path: '/' });
+		selectedTeamId = undefined;
 	}
 	const teamRes = await getTeams(authenticated.data, fetch);
 	const teams = teamRes.success ? teamRes.data : [];
@@ -27,8 +30,6 @@ export const load: LayoutServerLoad = async ({ fetch, cookies, url, params }) =>
 	if (selectedTeam == undefined && url.pathname != '/') {
 		redirect(307, '/');
 	}
-
-	console.log({ selectedTeam });
 
 	return {
 		sessionId: authenticated.data,
