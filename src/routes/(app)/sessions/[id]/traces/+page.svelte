@@ -1,16 +1,9 @@
 <script lang="ts">
-	import {
-		Card,
-		CardContent,
-		CardDescription,
-		CardHeader,
-		CardTitle
-	} from '$lib/components/ui/card';
-	import { ScrollArea } from '$lib/components/ui/scroll-area';
-	import type { TraceTree } from '$lib/types';
-	import { root } from 'postcss';
+	import type { TraceTree, Trace } from '$lib/types';
 	import type { PageProps } from './$types';
-	import { format } from 'date-fns';
+	import { buildTree } from '$lib/utils';
+	import TraceTreeCard from './TraceTreeCard.svelte';
+	import FullFlameGraph from './FullFlameGraph.svelte';
 
 	const { data }: PageProps = $props();
 	const sorted = $derived.by(() => {
@@ -33,33 +26,30 @@
 			.filter((tree) => tree.root.data.length > 0)
 			.sort((a, b) => avgDurations[b.root.name] - avgDurations[a.root.name]);
 	});
+
+	const graphTrees = $derived.by(() => {
+		const traces = data.traces;
+
+		const grouped: Record<string, Trace[]> = {};
+		for (let trace of traces) {
+			if (grouped[trace.groupId] === undefined) {
+				grouped[trace.groupId] = [];
+			}
+
+			grouped[trace.groupId].push(trace);
+		}
+
+		console.log(grouped);
+		return Array.from(Object.values(grouped))
+			.filter((group) => group.some((t) => t.parentId == ''))
+			.map((group) => buildTree(group));
+	});
 </script>
 
+<FullFlameGraph {graphTrees} />
+
 {#each sorted as tree}
-	<Card class="flex flex-col gap-4">
-		<CardHeader>
-			<CardTitle>{tree.root.name}</CardTitle>
-		</CardHeader>
-		<CardContent>
-			<ScrollArea orientation="horizontal">
-				<div class="flex flex-row gap-2">
-					{#each tree.root.data as trace}
-						<a href={`${window.location.pathname}/${trace.groupId}`}>
-							<div
-								class="flex w-[200px] flex-col gap-2 rounded-lg border p-2 shadow-sm hover:bg-muted"
-							>
-								<p>{format(new Date(trace.startTime), 'yyyy-MM-dd HH:mm')}</p>
-								<p>Duration: {trace.endTime - trace.startTime} ms</p>
-								<p class={trace.status == 'Error' ? 'text-red-500' : ''}>
-									Status: {trace.status}
-								</p>
-							</div>
-						</a>
-					{/each}
-				</div>
-			</ScrollArea>
-		</CardContent>
-	</Card>
+	<TraceTreeCard {tree} />
 {/each}
 
 <pre>{JSON.stringify(sorted, null, 2)}</pre>
