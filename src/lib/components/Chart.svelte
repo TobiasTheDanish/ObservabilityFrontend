@@ -4,7 +4,8 @@
 		GridComponent,
 		LegendComponent,
 		TooltipComponent,
-		TitleComponent
+		TitleComponent,
+		DataZoomComponent
 	} from 'echarts/components';
 	import { CustomChart, LineChart, PieChart } from 'echarts/charts';
 	import { CanvasRenderer } from 'echarts/renderers';
@@ -20,7 +21,8 @@
 		CanvasRenderer,
 		LegendComponent,
 		TooltipComponent,
-		TitleComponent
+		TitleComponent,
+		DataZoomComponent
 	]);
 
 	type Props = HTMLAttributes<HTMLDivElement> & {

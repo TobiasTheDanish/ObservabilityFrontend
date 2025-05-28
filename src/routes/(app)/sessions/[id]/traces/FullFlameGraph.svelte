@@ -11,21 +11,22 @@
 
 	const { graphTrees }: { graphTrees: GraphTree[] } = $props();
 
-	const recursionJson = (jsonObj: GraphTree): any[] => {
-		const data: any[] = [];
-		const rootVal = jsonObj.data.endTime - jsonObj.data.startTime;
+	const recursionJson = (jsonObj: GraphTree[]): any[] => {
+		const sorted = jsonObj.sort((a, b) => a.data.startTime - b.data.startTime);
 
-		const recur = (item: GraphTreeNode) => {
+		const data: any[] = [];
+
+		const recur = (item: GraphTreeNode, start: number, rootDur: number) => {
 			const duration = item.data.endTime - item.data.startTime;
 			const temp = {
 				name: item.data.traceId,
 				// [level, start_val, end_val, name, percentage]
 				value: [
 					item.depth,
-					item.data.startTime,
-					item.data.endTime,
+					item.data.startTime - start,
+					item.data.endTime - start,
 					item.data.name,
-					(duration / rootVal) * 100,
+					(duration / rootDur) * 100,
 					item.data.status,
 					item.data.errorMessage
 				],
@@ -36,11 +37,17 @@
 			data.push(temp);
 
 			for (const child of item.children || []) {
-				recur(child);
+				recur(child, start, rootDur);
 			}
 		};
 
-		recur(jsonObj);
+		let offset = 0;
+		for (const tree of sorted) {
+			const dur = tree.data.endTime - tree.data.startTime;
+			recur(tree, tree.data.startTime - offset, dur);
+			offset += dur + 50;
+		}
+
 		return data;
 	};
 
@@ -134,10 +141,7 @@
 		xAxis: {
 			type: 'value',
 			scale: true,
-			name: 'Time (ms)',
-			axisLabel: {
-				formatter: (v) => format(v, 'yyyy-MM-dd HH:mm:ss')
-			}
+			name: 'Time (ms)'
 		},
 		yAxis: {
 			type: 'category',
@@ -148,28 +152,14 @@
 				type: 'slider',
 				show: true,
 				xAxisIndex: [0],
-				start: 1,
-				end: 35
-			},
-			{
-				type: 'slider',
-				show: true,
-				yAxisIndex: [0],
-				left: '93%',
-				start: 29,
-				end: 36
+				start: 75,
+				end: 100
 			},
 			{
 				type: 'inside',
 				xAxisIndex: [0],
-				start: 1,
-				end: 35
-			},
-			{
-				type: 'inside',
-				yAxisIndex: [0],
-				start: 29,
-				end: 36
+				start: 75,
+				end: 100
 			}
 		],
 		series: [
@@ -180,7 +170,7 @@
 					x: [1, 2],
 					y: 0
 				},
-				data: graphTrees.flatMap((tree) => recursionJson(tree))
+				data: recursionJson(graphTrees)
 			}
 		]
 	}}
