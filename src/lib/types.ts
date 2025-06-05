@@ -123,7 +123,16 @@ export type AndroidExceptionEvent = AndroidBaseEvent & {
 	serializedData?: {
 		threadName: string;
 		handled: boolean;
-		exceptionUnits: any[];
+		exceptionUnits: {
+			name: string;
+			message?: string;
+			frames: {
+				className: string;
+				methodName: string;
+				fileName: string;
+				lineNum: number;
+			}[];
+		}[];
 	};
 };
 
