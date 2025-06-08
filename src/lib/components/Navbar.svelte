@@ -11,7 +11,7 @@
 	} = $props();
 </script>
 
-<div class="sticky top-0 z-50 flex justify-between bg-background p-4">
+<div class="sticky top-0 z-50 flex justify-between border-b bg-background p-4 shadow-sm">
 	<div>
 		<TeamSelect {selectedTeam} {teams} />
 	</div>

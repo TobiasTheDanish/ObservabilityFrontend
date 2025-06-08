@@ -48,70 +48,74 @@
 	};
 </script>
 
-<div class="flex flex-col gap-2">
-	<div class="grid grid-cols-[190px_202px_1fr] gap-4">
-		<div>
-			<p>Time</p>
+<div class={`grid ${selectedEvent != null ? 'grid-cols-2' : 'grid-cols-1'}`}>
+	<div
+		class="flex h-[calc(100vh-91px)] w-[calc(100vw-200px)] flex-col overflow-y-auto overflow-x-hidden"
+	>
+		<div class="grid grid-cols-[215px_202px_1fr]">
+			<div class="border p-2">
+				<p>Time</p>
+			</div>
+			<div class="border p-2">
+				<p>Type</p>
+			</div>
+			<div class="border p-2">
+				<p>Data</p>
+			</div>
 		</div>
-		<div>
-			<p>Type</p>
-		</div>
-		<div>
-			<p>Data</p>
-		</div>
+
+		{#each events as event}
+			<!-- svelte-ignore a11y_click_events_have_key_events -->
+			<div
+				class="grid grid-cols-[215px_202px_1fr] items-center"
+				onclick={() => (selectedEvent = event)}
+				role="button"
+				tabindex="0"
+			>
+				<div class="border border-t-0 p-2">
+					<p>{format(event.createdAt, 'yyyy-MM-dd HH:mm:ss')}</p>
+				</div>
+				<div class="border border-t-0 p-2">
+					<p class="w-fit capitalize">{displayableType(event)}</p>
+				</div>
+				<div class="h-full border border-t-0 p-2">
+					<p class="truncate">{dataString(event)}</p>
+				</div>
+			</div>
+		{/each}
 	</div>
 
-	{#each events as event}
-		<!-- svelte-ignore a11y_click_events_have_key_events -->
-		<div
-			class="grid grid-cols-[190px_202px_calc(100vw-200px-435px)] items-center gap-4"
-			onclick={() => (selectedEvent = event)}
-			role="button"
-			tabindex="0"
+	{#if selectedEvent != null}
+		<aside
+			class="grid-rows[85px_1fr] fixed right-0 grid h-[calc(100vh-91px)] w-1/2 overflow-auto border-l border-t bg-background shadow-md"
 		>
-			<div>
-				<p>{format(event.createdAt, 'yyyy-MM-dd HH:mm:ss')}</p>
+			<div class="flex gap-4 border-b px-4 py-2">
+				<button class="" aria-label="close" onclick={() => (selectedEvent = null)}>
+					<Close class="size-5" />
+				</button>
+				<div class="">
+					<h2 class="text-xl font-semibold capitalize tracking-tighter">
+						{displayableType(selectedEvent)}
+					</h2>
+					<p class="text-sm text-muted-foreground">
+						{format(selectedEvent.createdAt, 'yyyy-MM-dd HH:mm:ss')}
+					</p>
+				</div>
 			</div>
-			<div>
-				<p class="w-fit capitalize">{displayableType(event)}</p>
+			<div class="flex w-full flex-col gap-1 overflow-auto p-2">
+				{#if selectedEvent.type == 'exception' && selectedEvent.serializedData != undefined}
+					<StackTrace data={selectedEvent.serializedData} />
+				{:else}
+					{#each Object.entries(selectedEvent.serializedData) as dataField}
+						<div class="flex justify-between gap-2 text-wrap">
+							<p>{dataField[0]}:</p>
+							<p class="text-wrap break-all">
+								{JSON.stringify(dataField[1])}
+							</p>
+						</div>
+					{/each}
+				{/if}
 			</div>
-			<div>
-				<p class="truncate">{dataString(event)}</p>
-			</div>
-		</div>
-	{/each}
+		</aside>
+	{/if}
 </div>
-
-{#if selectedEvent != null}
-	<aside
-		class="absolute right-0 top-0 h-full w-[600px] overflow-auto border-l border-t bg-background shadow-md"
-	>
-		<div class="flex gap-4 border-b px-4 py-2">
-			<button class="" aria-label="close" onclick={() => (selectedEvent = null)}>
-				<Close class="size-5" />
-			</button>
-			<div class="">
-				<h2 class="text-xl font-semibold capitalize tracking-tighter">
-					{displayableType(selectedEvent)}
-				</h2>
-				<p class="text-sm text-muted-foreground">
-					{format(selectedEvent.createdAt, 'yyyy-MM-dd HH:mm:ss')}
-				</p>
-			</div>
-		</div>
-		<div class="flex w-full flex-col gap-1 p-2">
-			{#if selectedEvent.type == 'exception' && selectedEvent.serializedData != undefined}
-				<StackTrace data={selectedEvent.serializedData} />
-			{:else}
-				{#each Object.entries(selectedEvent.serializedData) as dataField}
-					<div class="flex justify-between gap-2 text-wrap">
-						<p>{dataField[0]}:</p>
-						<p class="text-wrap break-all">
-							{JSON.stringify(dataField[1])}
-						</p>
-					</div>
-				{/each}
-			{/if}
-		</div>
-	</aside>
-{/if}

@@ -9,6 +9,6 @@
 
 <Navbar {selectedTeam} {teams} />
 
-<main>
+<main class="overflow-hidden">
 	{@render children()}
 </main>

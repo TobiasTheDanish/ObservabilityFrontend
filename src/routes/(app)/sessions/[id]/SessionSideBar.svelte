@@ -4,9 +4,7 @@
 	const { id, appId }: { id: string; appId: string } = $props();
 </script>
 
-<aside
-	class="fixed top-[91px] z-30 hidden h-[calc(100vh-4.6rem)] w-full shrink-0 md:sticky md:block"
->
+<aside class="fixed top-[91px] z-30 hidden h-[calc(100vh-91px)] w-full shrink-0 md:sticky md:block">
 	<ScrollArea class="h-full w-full p-2">
 		<div class="w-full">
 			<div class="grid grid-flow-row auto-rows-max gap-1 text-sm">

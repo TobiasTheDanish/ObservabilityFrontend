@@ -10,7 +10,7 @@
 <div class="grid md:grid-cols-[200px_1fr]">
 	<SessionSideBar {appId} {id} />
 
-	<div class="relative w-[calc(100vw-200px)]">
+	<div class="">
 		{@render children()}
 	</div>
 </div>
