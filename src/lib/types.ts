@@ -23,11 +23,23 @@ export type Application = {
 	name: string;
 };
 
-export type Installation = {
-	id: string;
+export type InstallationType = 'android' | 'go';
+
+type InstallationData = {
+	android: AndroidInstallationData;
+	go: {};
+};
+
+export type AndroidInstallationData = {
 	sdkVersion: number;
 	model: string;
 	brand: string;
+};
+
+export type Installation<TType extends InstallationType = InstallationType> = {
+	id: string;
+	type: TType;
+	data: InstallationData[TType];
 	createdAt: number;
 };
 
@@ -43,9 +55,10 @@ export type AppData = {
 	sessions: Session[];
 };
 
-export type InstallationUiState = Installation & {
-	sessions: Session;
-};
+export type InstallationUiState<TType extends InstallationType = InstallationType> =
+	Installation<TType> & {
+		sessions: Session[];
+	};
 
 export type SessionUiState = Session & {
 	installation: Installation | undefined;

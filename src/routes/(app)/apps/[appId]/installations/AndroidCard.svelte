@@ -13,7 +13,7 @@
 	const {
 		installation
 	}: {
-		installation: InstallationUiState;
+		installation: InstallationUiState<'android'>;
 	} = $props();
 
 	const sessions = $derived(installation.sessions);
@@ -32,7 +32,8 @@
 	<Card>
 		<CardHeader>
 			<CardTitle>
-				{installation.type}
+				{installation.data.brand}
+				{installation.data.model}
 			</CardTitle>
 			<CardDescription>
 				{installation.id}
@@ -47,7 +48,7 @@
 			</p>
 		</CardContent>
 		<CardFooter>
-			{JSON.stringify(installation.data)}
+			Android API Level {installation.data.sdkVersion}
 		</CardFooter>
 	</Card>
 </a>

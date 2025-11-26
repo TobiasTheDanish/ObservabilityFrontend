@@ -29,7 +29,7 @@
 		<CardTitle>Total Installations</CardTitle>
 		<CardDescription>
 			{#if latestInstallation != undefined}
-				{format(new Date(latestInstallation.createdAt * 1000), 'yyyy-MM-dd HH:mm')}
+				{format(new Date(latestInstallation.createdAt), 'yyyy-MM-dd HH:mm')}
 			{/if}
 		</CardDescription>
 	</CardHeader>
